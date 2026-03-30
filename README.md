@@ -37,7 +37,7 @@ Run **pip install scikit-learn** in the terminal of your compiler to download sc
 
 Run the Agent:
 
-Run the **python edith.py** code in the compiler.
+Run the code in the compiler.
 
 Interact: Type your command at the USER >> prompt and press Enter.- THE AI PARTNER
 
@@ -80,6 +80,6 @@ Run **pip install scikit-learn** in the terminal of your compiler to download sc
 
 Run the Agent:
 
-run the **python edith.py** code in the compiler.
+run the code in the compiler.
 
 Interact: Type your command at the USER >> prompt and press Enter.
