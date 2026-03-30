@@ -1,0 +1,95 @@
+import random as rd   # for random replies
+import datetime as dt  # to get current time
+import webbrowser      # to open websites
+import sys             # for exiting program
+import os              # for system commands
+
+# trying to import ML stuff
+try:
+    from sklearn.feature_extraction.text import CountVectorizer
+    from sklearn.naive_bayes import MultinomialNB
+except:
+    print("sklearn not installed... just run: pip install scikit-learn")
+    sys.exit()
+
+# basic intent data
+The_data={
+    "time":["time kya hai","what time is it","clock check"],
+    "search":["search","google","look up"],
+    "open":["open youtube","open browser","start notepad"],
+    "wiki":["who is","what is","tell me about"],
+    "greet":["hello","hi","hey"],
+    "quit":["exit","bye","stop"]
+}
+
+sents=[]  # sentences list
+tags=[]   # corresponding labels
+
+# preparing training data
+for tag in The_data:
+    for example in The_data[tag]:
+        sents.append(example)
+        tags.append(tag)
+
+vecter=CountVectorizer()  # converting text to numbers
+x=vecter.fit_transform(sents)
+
+clf=MultinomialNB()  # model
+clf.fit(x, tags)     # training
+
+# print output
+def speak(message):
+    print("Edith >", message)
+
+# main logic
+def input_handler(text):
+    text=text.lower().strip()
+
+    if text=="":
+        return True
+
+    # predict intent
+    prediction=clf.predict(vecter.transform([text]))[0]
+
+    if prediction=="time":
+        current=dt.datetime.now().strftime("%H:%M")
+        speak(f"its {current} rn")
+
+    elif prediction=="search":
+        q=text.replace("search","").replace("google","")
+        webbrowser.open("https://google.com/search?q="+q)
+        speak("lemme check that...")
+
+    elif prediction=="open":
+        if "youtube" in text:
+            webbrowser.open("https://youtube.com")
+        elif "notepad" in text:
+            os.system("notepad")
+        else:
+            webbrowser.open("https://google.com")
+        speak("done")
+
+    elif prediction=="wiki":
+        topic=text.replace("who is","").replace("what is","")
+        webbrowser.open("https://en.wikipedia.org/wiki/"+topic)
+        speak("searching wiki...")
+
+    elif prediction=="greet":
+        speak(rd.choice(["yo","hi","hello bhai"]))
+
+    elif prediction=="quit":
+        speak("ok bye")
+        return False
+
+    return True
+
+# program starts here
+if __name__=="__main__":
+    print("starting Edith...")
+    print("-------------------")
+
+    while True:
+        inputt=input("you: ")
+
+        if not input_handler(inputt):
+            break
